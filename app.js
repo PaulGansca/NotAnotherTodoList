@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(express.static("public"));
+app.set('views', __dirname + '/views');
 mongoose.connect("mongodb://localhost:27017/todolistDB", {
   useNewUrlParser: true
 });
@@ -35,6 +36,14 @@ const item3 = new Item({
 });
 
 const defaultItems = [item1, item2, item3];
+
+//TODO add another field called type 
+const listSchema = {
+  name: String,
+  items: [itemsSchema]
+};
+
+const List = mongoose.model("List", listSchema);
 
 app.get("/", function (req, res) {
 
@@ -60,6 +69,53 @@ app.get("/", function (req, res) {
   })
 
 });
+
+app.get("/create/:customListName", (req, res) => {
+  const customListName = req.params.customListName;
+
+  List.findOne({
+    name: customListName
+  }, (err, results) => {
+    if (err) {
+      console.log(err);
+    } else if (!results) {
+      //list doesn't exist so create one
+      const list = new List({
+        name: req.params.customListName,
+        items: defaultItems
+      });
+
+      list.save();
+
+      res.redirect(`${customListName}`)
+    } else {
+      //show existing
+      res.render("list", {
+        listTitle: results.name,
+        newListItems: results.items
+      });
+    }
+  })
+
+});
+
+app.get("/:customListName", (req, res) => {
+  const customListName = req.params.customListName;
+
+  List.findOne({
+    name: customListName
+  }, (err, results) => {
+    if (err) {
+      console.log(err);
+    } else {
+      //show existing
+      res.render("list", {
+        listTitle: results.name,
+        newListItems: results.items
+      });
+    }
+  })
+})
 
 app.post("/", function (req, res) {
 
@@ -90,13 +146,6 @@ app.post("/delete", (req, res) => {
 
       res.redirect("/");
     }
-  });
-});
-
-app.get("/work", function (req, res) {
-  res.render("list", {
-    listTitle: "Work List",
-    newListItems: workItems
   });
 });
 
