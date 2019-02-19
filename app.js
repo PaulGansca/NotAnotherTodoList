@@ -119,17 +119,26 @@ app.get("/:customListName", (req, res) => {
 
 app.post("/", function (req, res) {
 
-  const item = req.body.newItem;
-  Item.create({
-    name: item
-  }, (err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("Task created succesfully")
-    }
-  })
-  res.redirect("/");
+  const itemName = req.body.newItem;
+  const listName = req.body.list;
+
+  const item = new Item({
+    name: itemName
+  });
+  //TODO modify when changing root list name
+  if (listName === "Today") {
+    item.save();
+    res.redirect("/");
+  } else {
+    List.findOne({
+      name: listName
+    }, (err, results) => {
+      results.items.push(item);
+      results.save();
+      res.redirect(`/${listName}`);
+    })
+  }
+
 });
 
 app.post("/delete", (req, res) => {
