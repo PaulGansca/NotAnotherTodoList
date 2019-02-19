@@ -3,6 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const _ = require("lodash");
 
 const app = express();
 
@@ -20,6 +21,8 @@ mongoose.connect("mongodb://localhost:27017/todolistDB", {
 const itemsSchema = {
   name: String
 };
+
+const ROOT_LIST = "Today";
 
 const Item = mongoose.model("Item", itemsSchema);
 
@@ -62,7 +65,7 @@ app.get("/", function (req, res) {
       }
 
       res.render("list", {
-        listTitle: "Today",
+        listTitle: ROOT_LIST,
         newListItems: results
       });
     }
@@ -71,7 +74,8 @@ app.get("/", function (req, res) {
 });
 
 app.get("/create/:customListName", (req, res) => {
-  const customListName = req.params.customListName;
+  let customListName = _.capitalize(req.params.customListName);
+  console.log(customListName);
 
   List.findOne({
     name: customListName
@@ -80,16 +84,18 @@ app.get("/create/:customListName", (req, res) => {
       console.log(err);
     } else if (!results) {
       //list doesn't exist so create one
+      console.log(customListName);
       const list = new List({
-        name: req.params.customListName,
+        name: customListName,
         items: defaultItems
       });
 
       list.save();
 
-      res.redirect(`${customListName}`)
+      res.redirect(`/${customListName}`)
     } else {
       //show existing
+      res.redirect(`/${customListName}`)
       res.render("list", {
         listTitle: results.name,
         newListItems: results.items
@@ -100,7 +106,7 @@ app.get("/create/:customListName", (req, res) => {
 });
 
 app.get("/:customListName", (req, res) => {
-  const customListName = req.params.customListName;
+  let customListName = _.capitalize(req.params.customListName);
 
   List.findOne({
     name: customListName
@@ -125,8 +131,8 @@ app.post("/", function (req, res) {
   const item = new Item({
     name: itemName
   });
-  //TODO modify when changing root list name
-  if (listName === "Today") {
+
+  if (listName === ROOT_LIST) {
     item.save();
     res.redirect("/");
   } else {
@@ -143,19 +149,31 @@ app.post("/", function (req, res) {
 
 app.post("/delete", (req, res) => {
   //select inputs that are checked
-  const doneItem = Object.keys(req.body)[0];
+  const doneItem = req.body.checkbox;
+  const listName = req.body.listName;
 
   //use their name to find them in the db and delete
-  Item.deleteOne({
-    _id: doneItem
-  }, (err) => {
-    if (err) {
-      console.log(err);
-    } else {
-
-      res.redirect("/");
-    }
-  });
+  if (listName === ROOT_LIST) {
+    Item.findByIdAndRemove(doneItem, err => {
+      if (!err) {
+        res.redirect("/");
+      }
+    });
+  } else {
+    List.findOneAndUpdate({
+      name: listName
+    }, {
+      $pull: {
+        items: {
+          _id: doneItem
+        }
+      }
+    }, (err, results) => {
+      if (!err) {
+        res.redirect(`/${listName}`)
+      }
+    })
+  }
 });
 
 app.get("/about", function (req, res) {
