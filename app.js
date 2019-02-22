@@ -40,33 +40,44 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
-//TODO add another field called type 
+//ideas
+
+const ideasSchema = {
+  name: String,
+  content: String
+}
+
+const Idea = mongoose.model("Idea", ideasSchema);
+
+//clipboard
+
+const linksSchema = {
+  name: String,
+  clipboard: String
+}
+
+const Link = mongoose.model("Link", linksSchema);
+
 const listSchema = {
   name: String,
-  items: [itemsSchema]
+  type: String,
+  description: String,
+  todos: [itemsSchema],
+  ideas: [ideasSchema],
+  clipboard: [linksSchema]
 };
 
 const List = mongoose.model("List", listSchema);
 
 app.get("/", function (req, res) {
 
-  Item.find((err, results) => {
+  List.find((err, results) => {
     if (err) {
       console.log(err);
     } else {
-      if (results.length === 0) {
-        Item.insertMany(defaultItems, err => {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log("Saved default items to db")
-          }
-        });
-      }
-
-      res.render("list", {
+      res.render("home", {
         listTitle: ROOT_LIST,
-        newListItems: results
+        newLists: results
       });
     }
   })
@@ -74,8 +85,7 @@ app.get("/", function (req, res) {
 });
 
 app.get("/create/:customListName", (req, res) => {
-  let customListName = _.capitalize(req.params.customListName);
-  console.log(customListName);
+  let customListName = req.params.customListName;
 
   List.findOne({
     name: customListName
@@ -84,10 +94,11 @@ app.get("/create/:customListName", (req, res) => {
       console.log(err);
     } else if (!results) {
       //list doesn't exist so create one
-      console.log(customListName);
       const list = new List({
         name: customListName,
-        items: defaultItems
+        type: "HARDCODED",
+        description: "HARDCODED IN CREATE ROUTE",
+        todos: defaultItems
       });
 
       list.save();
@@ -98,7 +109,7 @@ app.get("/create/:customListName", (req, res) => {
       res.redirect(`/${customListName}`)
       res.render("list", {
         listTitle: results.name,
-        newListItems: results.items
+        newListItems: results.todos
       });
     }
   })
@@ -106,7 +117,7 @@ app.get("/create/:customListName", (req, res) => {
 });
 
 app.get("/:customListName", (req, res) => {
-  let customListName = _.capitalize(req.params.customListName);
+  let customListName = req.params.customListName;
 
   List.findOne({
     name: customListName
@@ -117,7 +128,7 @@ app.get("/:customListName", (req, res) => {
       //show existing
       res.render("list", {
         listTitle: results.name,
-        newListItems: results.items
+        newListItems: results.todos
       });
     }
   })
@@ -139,7 +150,7 @@ app.post("/", function (req, res) {
     List.findOne({
       name: listName
     }, (err, results) => {
-      results.items.push(item);
+      results.todos.push(item);
       results.save();
       res.redirect(`/${listName}`);
     })
@@ -154,7 +165,9 @@ app.post("/delete", (req, res) => {
 
   //use their name to find them in the db and delete
   if (listName === ROOT_LIST) {
-    Item.findByIdAndRemove(doneItem, err => {
+    List.deleteOne({
+      _id: doneItem
+    }, err => {
       if (!err) {
         res.redirect("/");
       }
@@ -164,7 +177,7 @@ app.post("/delete", (req, res) => {
       name: listName
     }, {
       $pull: {
-        items: {
+        todos: {
           _id: doneItem
         }
       }
