@@ -84,6 +84,43 @@ app.get("/", function (req, res) {
 
 });
 
+app.get("/createList", (req, res) => {
+  res.render("createList");
+});
+
+app.post("/createList", (req, res) => {
+  let listName = _.kebabCase(req.body.listName);
+  let listType = req.body.listType;
+  let listDescription = req.body.listDescription;
+
+  List.findOne({
+    name: listName
+  }, (err, results) => {
+    if (err) {
+      res.send(err);
+    } else if (!results) {
+      //list doesn't exist so create one
+      const list = new List({
+        name: listName,
+        type: listType,
+        description: listDescription,
+      });
+
+      list.save();
+
+      res.redirect(`/${listName}`);
+    } else {
+      //show existing
+      res.redirect(`/${listName}`)
+      res.render(listType, {
+        listTitle: results.name,
+        newListItems: results.todos
+      });
+    }
+  })
+
+});
+
 app.get("/create/:customListName", (req, res) => {
   let customListName = req.params.customListName;
 
@@ -107,7 +144,7 @@ app.get("/create/:customListName", (req, res) => {
     } else {
       //show existing
       res.redirect(`/${customListName}`)
-      res.render("list", {
+      res.render("todolist", {
         listTitle: results.name,
         newListItems: results.todos
       });
@@ -117,7 +154,7 @@ app.get("/create/:customListName", (req, res) => {
 });
 
 app.get("/:customListName", (req, res) => {
-  let customListName = req.params.customListName;
+  let customListName = _.kebabCase(req.params.customListName);
 
   List.findOne({
     name: customListName
@@ -126,7 +163,7 @@ app.get("/:customListName", (req, res) => {
       console.log(err);
     } else {
       //show existing
-      res.render("list", {
+      res.render("todolist", {
         listTitle: results.name,
         newListItems: results.todos
       });

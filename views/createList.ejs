@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Paul Mihai Gansca">
+  <meta name="generator" content="Jekyll v3.8.5">
+  <title>Not Just A To Do List</title>
+  <%# Bootstrap core CSS %>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  
+  <link rel="stylesheet" href="/css/createList.css">
+
+</head>
+
+<body class="text-center">
+
+<form class="form-signin" action="/createList" method="post">
+  <h1 class="h3 mb-3 font-weight-normal">Create a new List</h1>
+  <label for="listName" class="sr-only">List Name</label>
+  <input type="text" name="listName" id="listName" class="form-control" placeholder="List Name" required autofocus>
+  <label for="listType" class="sr-only">List Type</label>
+  <input type="text" name="listType" id="listType" class="form-control" placeholder="List Type" required >
+  <label for="listDescription" class="sr-only">List Description</label>
+  <input type="text" name="listDescription" id="listDescription" class="form-control" placeholder="List Description" >
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Create List</button>
+  <p class="mt-5 mb-3 text-muted">&copy; 2019</p>
+</form>
+</body>
+</html>
