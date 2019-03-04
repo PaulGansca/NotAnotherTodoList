@@ -24,7 +24,11 @@
   <label for="listName" class="sr-only">List Name</label>
   <input type="text" name="listName" id="listName" class="form-control" placeholder="List Name" required autofocus>
   <label for="listType" class="sr-only">List Type</label>
-  <input type="text" name="listType" id="listType" class="form-control" placeholder="List Type" required >
+  <select class="custom-select form-control" name="listType" id="listType" required>
+    <option selected value="todolist">ToDo List</option>
+    <option value="clipboard">Clipboard</option>
+    <option value="idea">Idea</option>
+  </select>
   <label for="listDescription" class="sr-only">List Description</label>
   <input type="text" name="listDescription" id="listDescription" class="form-control" placeholder="List Description" >
   <button class="btn btn-lg btn-primary btn-block" type="submit">Create List</button>
