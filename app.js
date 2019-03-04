@@ -55,8 +55,9 @@ const Idea = mongoose.model("Idea", ideasSchema);
 //clipboard
 
 const linksSchema = {
-    name: String,
-    clipboard: String
+    description: String,
+    clipboard: String,
+    date: Date
 };
 
 const Link = mongoose.model("Link", linksSchema);
@@ -111,7 +112,7 @@ app.post("/createList", (req, res) => {
 
                 list.save();
 
-                res.redirect(`/${listName}`);
+                res.redirect(`/${listType}/${listName}`);
             } else {
                 //show existing
                 res.redirect(`/${listName}`);
@@ -124,7 +125,7 @@ app.post("/createList", (req, res) => {
     );
 });
 
-app.get("/:customListName", (req, res) => {
+app.get("/todolist/:customListName", (req, res) => {
     let customListName = _.kebabCase(req.params.customListName);
 
     List.findOne(
@@ -135,6 +136,7 @@ app.get("/:customListName", (req, res) => {
             if (err) {
                 console.log(err);
             } else {
+                let type = results.type;
                 //show existing
                 res.render("todolist", {
                     listTitle: results.name,
@@ -145,7 +147,29 @@ app.get("/:customListName", (req, res) => {
     );
 });
 
-app.post("/", function(req, res) {
+app.get("/clipboard/:customListName", (req, res) => {
+    let customListName = _.kebabCase(req.params.customListName);
+
+    List.findOne(
+        {
+            name: customListName
+        },
+        (err, results) => {
+            if (err) {
+                console.log(err);
+            } else {
+                let type = results.type;
+                //show existing
+                res.render("clipboard", {
+                    listTitle: results.name,
+                    newListItems: results.clipboard
+                });
+            }
+        }
+    );
+});
+
+app.post("/todolist", function(req, res) {
     const itemName = req.body.newItem;
     const listName = req.body.list;
 
@@ -160,10 +184,12 @@ app.post("/", function(req, res) {
         (err, results) => {
             results.todos.push(item);
             results.save();
-            res.redirect(`/${listName}`);
+            res.redirect(`/todolist/${listName}`);
         }
     );
 });
+
+app.post("/clipboard", (req, res) => {});
 
 app.post("/delete", (req, res) => {
     //select inputs that are checked
