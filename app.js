@@ -130,13 +130,13 @@ app.get("/todolist/:customListName", (req, res) => {
 
     List.findOne(
         {
-            name: customListName
+            name: customListName,
+            type: "todolist"
         },
         (err, results) => {
             if (err) {
                 console.log(err);
             } else {
-                let type = results.type;
                 //show existing
                 res.render("todolist", {
                     listTitle: results.name,
@@ -152,13 +152,13 @@ app.get("/clipboard/:customListName", (req, res) => {
 
     List.findOne(
         {
-            name: customListName
+            name: customListName,
+            type: "clipboard"
         },
         (err, results) => {
             if (err) {
                 console.log(err);
             } else {
-                let type = results.type;
                 //show existing
                 res.render("clipboard", {
                     listTitle: results.name,

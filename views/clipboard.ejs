@@ -32,7 +32,18 @@
                 <th scope="col">Content</th>
                 <th scope="col">Description</th>
             </tr>
-        </thead>
+        </thead>    
+    <% newListItems.forEach(elem => { let i=1; %>
+        <tbody>
+            <tr>
+                <th scope="row"><%= i %></th>
+                <td><%= elem.date %></td>
+                <td><%= elem.clipboard %></td>
+                <td><%= elem.description %></td>
+                <td><i class="fas fa-trash-alt"></i></td>
+            </tr>
+        </tbody>
+    <% i+=1;}) %>
         <tbody>
             <tr>
                 <form class="" action="/" method="post">
@@ -42,15 +53,6 @@
                     <td>@mdo</td>
                     <td><i class="fas fa-trash-alt"></i></td>
                 </form>
-            </tr>
-        </tbody>
-        <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Desc</td>
-                <td>@mdo</td>
-                <td><i class="fas fa-trash-alt"></i></td>
             </tr>
         </tbody>
     </table>
