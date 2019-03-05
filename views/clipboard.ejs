@@ -53,7 +53,10 @@
                 <td><%= elem.date %></td>
                 <td><%= elem.clipboard %></td>
                 <td><%= elem.description %></td>
-                <td><i class="fas fa-trash-alt"></i></td>
+                <form class="" action="/clipboard/delete" method="post">
+                    <input type="hidden" name="listName" value="<%= listTitle %>"></input>
+                    <td><button class="btn btn-link" type="submit" name="deleteButton" value="<%= elem._id %>"><i class="fas fa-trash-alt text-danger"></i></td>
+                </form>
             </tr>
         </tbody>
     <% i+=1;}) %>

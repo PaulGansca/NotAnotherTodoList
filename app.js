@@ -217,7 +217,7 @@ app.post("/clipboard", (req, res) => {
     );
 });
 
-app.post("/delete", (req, res) => {
+app.post("/todolist/delete", (req, res) => {
     //select inputs that are checked
     const doneItem = req.body.checkbox;
     const listName = req.body.listName;
@@ -248,11 +248,37 @@ app.post("/delete", (req, res) => {
             },
             (err, results) => {
                 if (!err) {
-                    res.redirect(`/${listName}`);
+                    res.redirect(`/todolist/${listName}`);
                 }
             }
         );
     }
+});
+
+app.post("/clipboard/delete", (req, res) => {
+    //select Link that was binned
+    const deleteLink = req.body.deleteButton;
+    const listName = req.body.listName;
+
+    //use their name to find them in the db and delete
+
+    List.findOneAndUpdate(
+        {
+            name: listName
+        },
+        {
+            $pull: {
+                clipboard: {
+                    _id: deleteLink
+                }
+            }
+        },
+        (err, results) => {
+            if (!err) {
+                res.redirect(`/clipboard/${listName}`);
+            }
+        }
+    );
 });
 
 app.get("/about", function(req, res) {
