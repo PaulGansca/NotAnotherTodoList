@@ -24,6 +24,19 @@
 
 <div class="container">
     <h1 class="text-center">Clipboard</h1>
+
+    <form class="" action="/clipboard" method="post">
+        <div class="form-row">
+            <div class="col-8">
+                <input type="text" name="content" class="form-control" placeholder="Content">
+            </div>
+            <div class="col">
+                <input type="text" name="description" class="form-control" placeholder="Description">
+            </div>
+            <button type="submit" name="clipboard" value="<%= listTitle %>">Add</button>
+        </div>
+    </form>
+<br>
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -33,7 +46,7 @@
                 <th scope="col">Description</th>
             </tr>
         </thead>    
-    <% newListItems.forEach(elem => { let i=1; %>
+    <%let i=1; newListItems.forEach(elem => {  %>
         <tbody>
             <tr>
                 <th scope="row"><%= i %></th>
@@ -44,17 +57,6 @@
             </tr>
         </tbody>
     <% i+=1;}) %>
-        <tbody>
-            <tr>
-                <form class="" action="/" method="post">
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Desc</td>
-                    <td>@mdo</td>
-                    <td><i class="fas fa-trash-alt"></i></td>
-                </form>
-            </tr>
-        </tbody>
     </table>
 </div>
 </body>

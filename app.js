@@ -57,7 +57,7 @@ const Idea = mongoose.model("Idea", ideasSchema);
 const linksSchema = {
     description: String,
     clipboard: String,
-    date: Date
+    date: String
 };
 
 const Link = mongoose.model("Link", linksSchema);
@@ -189,7 +189,33 @@ app.post("/todolist", function(req, res) {
     );
 });
 
-app.post("/clipboard", (req, res) => {});
+app.post("/clipboard", (req, res) => {
+    const clipboardName = req.body.clipboard;
+    const elemContent = req.body.content;
+    const elemDescription = req.body.description;
+    var date = new Date().toLocaleDateString();
+
+    const link = new Link({
+        description: elemDescription,
+        clipboard: elemContent,
+        date: date
+    });
+    console.log(link);
+    List.findOne(
+        {
+            name: clipboardName
+        },
+        (err, results) => {
+            if (err) {
+                console.log(err);
+            } else {
+                results.clipboard.push(link);
+                results.save();
+                res.redirect(`/clipboard/${clipboardName}`);
+            }
+        }
+    );
+});
 
 app.post("/delete", (req, res) => {
     //select inputs that are checked
