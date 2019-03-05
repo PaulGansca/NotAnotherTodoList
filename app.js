@@ -16,6 +16,7 @@ app.use(
 );
 app.use(express.static("public"));
 app.set("views", __dirname + "/views");
+app.use('/scripts', express.static(__dirname + '/node_modules/clipboard/dist/'));
 mongoose.connect("mongodb://localhost:27017/todolistDB", {
     useNewUrlParser: true,
     useFindAndModify: false
@@ -73,7 +74,7 @@ const listSchema = {
 
 const List = mongoose.model("List", listSchema);
 
-app.get("/", function(req, res) {
+app.get("/", function (req, res) {
     List.find((err, results) => {
         if (err) {
             console.log(err);
@@ -95,8 +96,7 @@ app.post("/createList", (req, res) => {
     let listType = req.body.listType;
     let listDescription = req.body.listDescription;
 
-    List.findOne(
-        {
+    List.findOne({
             name: listName
         },
         (err, results) => {
@@ -128,8 +128,7 @@ app.post("/createList", (req, res) => {
 app.get("/todolist/:customListName", (req, res) => {
     let customListName = _.kebabCase(req.params.customListName);
 
-    List.findOne(
-        {
+    List.findOne({
             name: customListName,
             type: "todolist"
         },
@@ -150,8 +149,7 @@ app.get("/todolist/:customListName", (req, res) => {
 app.get("/clipboard/:customListName", (req, res) => {
     let customListName = _.kebabCase(req.params.customListName);
 
-    List.findOne(
-        {
+    List.findOne({
             name: customListName,
             type: "clipboard"
         },
@@ -169,7 +167,7 @@ app.get("/clipboard/:customListName", (req, res) => {
     );
 });
 
-app.post("/todolist", function(req, res) {
+app.post("/todolist", function (req, res) {
     const itemName = req.body.newItem;
     const listName = req.body.list;
 
@@ -177,8 +175,7 @@ app.post("/todolist", function(req, res) {
         name: itemName
     });
 
-    List.findOne(
-        {
+    List.findOne({
             name: listName
         },
         (err, results) => {
@@ -201,8 +198,7 @@ app.post("/clipboard", (req, res) => {
         date: date
     });
     console.log(link);
-    List.findOne(
-        {
+    List.findOne({
             name: clipboardName
         },
         (err, results) => {
@@ -224,8 +220,7 @@ app.post("/todolist/delete", (req, res) => {
 
     //use their name to find them in the db and delete
     if (listName === ROOT_LIST) {
-        List.deleteOne(
-            {
+        List.deleteOne({
                 _id: doneItem
             },
             err => {
@@ -235,11 +230,9 @@ app.post("/todolist/delete", (req, res) => {
             }
         );
     } else {
-        List.findOneAndUpdate(
-            {
+        List.findOneAndUpdate({
                 name: listName
-            },
-            {
+            }, {
                 $pull: {
                     todos: {
                         _id: doneItem
@@ -262,11 +255,9 @@ app.post("/clipboard/delete", (req, res) => {
 
     //use their name to find them in the db and delete
 
-    List.findOneAndUpdate(
-        {
+    List.findOneAndUpdate({
             name: listName
-        },
-        {
+        }, {
             $pull: {
                 clipboard: {
                     _id: deleteLink
@@ -281,10 +272,10 @@ app.post("/clipboard/delete", (req, res) => {
     );
 });
 
-app.get("/about", function(req, res) {
+app.get("/about", function (req, res) {
     res.render("about");
 });
 
-app.listen(3000, function() {
+app.listen(3000, function () {
     console.log("Server started on port 3000");
 });
