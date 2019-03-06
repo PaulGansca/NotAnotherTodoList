@@ -48,24 +48,49 @@
         </thead>    
     <%let i=1; newListItems.forEach(elem => {  %>
         <tbody>
+            <%if(elementId == elem._id) {%>
                 <tr>
                     <th scope="row"><%= i %></th>
-                    <td><%= elem.date %></td>
-                    <td> 
-                    <%= elem.clipboard %> 
-                        <button class="btn" data-trigger="click" data-toggle="tooltip" data-placement="bottom" title="Copied" data-clipboard-text="<%= elem.clipboard %>">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                    </td>
-                    <td><%= elem.description %></td>
+                    <form class="" action="<%= `/${listTitle}/clipboard/${elem._id}?_method=PATCH` %>" method="post">
+                        <td><%= elem.date %></td>
+                        <td> 
+                        <input type="text" name="content" class="form-control" value="<%= elem.clipboard %>" placeholder="Content"> 
+                            <button class="btn" data-trigger="click" data-toggle="tooltip" data-placement="bottom" title="Copied" data-clipboard-text="<%= elem.clipboard %>">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </td>
+                        <td><input type="text" name="description" class="form-control" value="<%= elem.description %>" placeholder="Description"></td>
+                        <button class="btn btn-primary" type="submit" name="clipboard" value="<%= listTitle %>">Update</button>
+                    </form>
                     <td>
                     <form class="" action="/clipboard/delete" method="post">
                         <input type="hidden" name="listName" value="<%= listTitle %>"></input>
                         <button class="btn btn-link" type="submit" name="deleteButton" value="<%= elem._id %>"><i class="fas fa-trash-alt text-danger"></i></button>
-                        <div class="btn btn-link"><a href="<%= `/${listTitle}/clipboard/${elem._id}` %>"> <i class="fas fa-edit align-right"></i></a></div>
+                        <button class="btn btn-link"><a href="<%= `/${listTitle}/clipboard/${elem._id}` %>"> <i class="fas fa-edit align-right"></i></a></button>
                     </form>
-                    </td>
+                    </td>             
                 </tr>
+            <%} else {%>
+            <tr>
+                <th scope="row"><%= i %></th>
+                <td><%= elem.date %></td>
+                <td> 
+                <%= elem.clipboard %> 
+                    <button class="btn" data-trigger="click" data-toggle="tooltip" data-placement="bottom" title="Copied" data-clipboard-text="<%= elem.clipboard %>">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </td>
+                <td><%= elem.description %></td>
+                <form class="" action="/clipboard/delete" method="post">
+                    <input type="hidden" name="listName" value="<%= listTitle %>"></input>
+                    <td>
+                    <button class="btn btn-link" type="submit" name="deleteButton" value="<%= elem._id %>"><i class="fas fa-trash-alt text-danger"></i></button>
+                    <div class="btn btn-link"><a href="<%= `/${listTitle}/clipboard/${elem._id}` %>"> <i class="fas fa-edit align-right"></i></a></div>
+                    </td>
+                </form>
+                
+            </tr>
+            <% } %>
         </tbody>
     <% i+=1;}) %>
     </table>
