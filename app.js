@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const _ = require("lodash");
+const methodOverride = require("method-override");
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(
         extended: true
     })
 );
+app.use(methodOverride('_method'))
 app.use(express.static("public"));
 app.set("views", __dirname + "/views");
 app.use('/scripts', express.static(__dirname + '/node_modules/clipboard/dist/'));
@@ -271,6 +273,54 @@ app.post("/clipboard/delete", (req, res) => {
         }
     );
 });
+
+app.get("/:customListName/clipboard/:elementId", (req, res) => {
+    let customListName = _.kebabCase(req.params.customListName);
+    let elementId = req.params.elementId;
+
+    List.findOne({
+            name: customListName,
+            type: "clipboard"
+        },
+        (err, results) => {
+            if (err) {
+                console.log(err);
+            } else {
+                //show existing
+                res.render("putClipboard", {
+                    listTitle: results.name,
+                    newListItems: results.clipboard,
+                    elementId: elementId
+                });
+            }
+        }
+    );
+});
+
+app.patch("/:customListName/clipboard/:elementId", (req, res) => {
+
+    List.updateOne({
+            name: req.params.customListName,
+            clipboard: {
+                $elemMatch: {
+                    _id: req.params.elementId
+                }
+            }
+        }, { //update just the right Link inside clipboard
+            $set: {
+                "clipboard.$.clipboard": req.body.content,
+                "clipboard.$.description": req.body.description
+            }
+        },
+        err => {
+            if (!err) {
+                res.redirect(`/clipboard/${req.params.customListName}`);
+            } else {
+                res.send(err);
+            }
+        }
+    );
+})
 
 app.get("/about", function (req, res) {
     res.render("about");
