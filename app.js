@@ -298,7 +298,7 @@ app.get("/:customListName/clipboard/:elementId", (req, res) => {
 });
 
 app.patch("/:customListName/clipboard/:elementId", (req, res) => {
-
+    var date = new Date().toLocaleDateString();
     List.updateOne({
             name: req.params.customListName,
             clipboard: {
@@ -309,7 +309,8 @@ app.patch("/:customListName/clipboard/:elementId", (req, res) => {
         }, { //update just the right Link inside clipboard
             $set: {
                 "clipboard.$.clipboard": req.body.content,
-                "clipboard.$.description": req.body.description
+                "clipboard.$.description": req.body.description,
+                "clipboard.$.date": date
             }
         },
         err => {
