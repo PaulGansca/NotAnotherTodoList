@@ -169,6 +169,27 @@ app.get("/clipboard/:customListName", (req, res) => {
     );
 });
 
+app.get("/idea/:customListName", (req, res) => {
+    let customListName = _.kebabCase(req.params.customListName);
+
+    List.findOne({
+            name: customListName,
+            type: "idea"
+        },
+        (err, results) => {
+            if (err) {
+                console.log(err);
+            } else {
+                //show existing
+                res.render("idea", {
+                    listTitle: results.name,
+                    newListItems: results.idea
+                });
+            }
+        }
+    );
+});
+
 app.post("/todolist", function (req, res) {
     const itemName = req.body.newItem;
     const listName = req.body.list;
@@ -299,7 +320,7 @@ app.get("/:customListName/clipboard/:elementId", (req, res) => {
 
 app.patch("/:customListName/clipboard/:elementId", (req, res) => {
     var date = new Date().toLocaleDateString();
-    List.updateOne({
+    List.update({
             name: req.params.customListName,
             clipboard: {
                 $elemMatch: {
