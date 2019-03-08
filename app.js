@@ -150,7 +150,7 @@ app.get("/todolist/:customListName", (req, res) => {
 
 app.get("/clipboard/:customListName", (req, res) => {
     let customListName = _.kebabCase(req.params.customListName);
-
+    let elementId = -1;
     List.findOne({
             name: customListName,
             type: "clipboard"
@@ -162,7 +162,8 @@ app.get("/clipboard/:customListName", (req, res) => {
                 //show existing
                 res.render("clipboard", {
                     listTitle: results.name,
-                    newListItems: results.clipboard
+                    newListItems: results.clipboard,
+                    elementId: elementId
                 });
             }
         }
@@ -351,7 +352,7 @@ app.get("/:customListName/clipboard/:elementId", (req, res) => {
                 console.log(err);
             } else {
                 //show existing
-                res.render("putClipboard", {
+                res.render("clipboard", {
                     listTitle: results.name,
                     newListItems: results.clipboard,
                     elementId: elementId
