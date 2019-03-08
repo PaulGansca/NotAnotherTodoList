@@ -27,7 +27,7 @@ ul {
     padding: 3em;
 }
 
-ul li a {
+ul li a.list {
     text-decoration: none;
     color: #000;
     background: #ffc;
@@ -59,13 +59,13 @@ ul li p {
     font-size: 180%;
 }
 
-ul li a {
+ul li a.list {
     -webkit-transform: rotate(-6deg);
     -o-transform: rotate(-6deg);
     -moz-transform: rotate(-6deg);
 }
 
-ul li:nth-child(even) a {
+ul li:nth-child(even) a.list {
     -o-transform: rotate(4deg);
     -webkit-transform: rotate(4deg);
     -moz-transform: rotate(4deg);
@@ -74,7 +74,7 @@ ul li:nth-child(even) a {
     background: #cfc;
 }
 
-ul li:nth-child(3n) a {
+ul li:nth-child(3n) a.list {
     -o-transform: rotate(-3deg);
     -webkit-transform: rotate(-3deg);
     -moz-transform: rotate(-3deg);
@@ -83,7 +83,7 @@ ul li:nth-child(3n) a {
     background: #ccf;
 }
 
-ul li:nth-child(5n) a {
+ul li:nth-child(5n) a.list {
     -o-transform: rotate(5deg);
     -webkit-transform: rotate(5deg);
     -moz-transform: rotate(5deg);
@@ -91,7 +91,7 @@ ul li:nth-child(5n) a {
     top: -10px;
 }
 
-ul li a:hover,
+ul li a.list:hover,
 ul li a:focus {
     box-shadow: 10px 10px 7px rgba(0, 0, 0, .7);
     -moz-box-shadow: 10px 10px 7px rgba(0, 0, 0, .7);
@@ -119,4 +119,11 @@ ol li a {
 a:hover {
     text-decoration: none;
     color: #000;
+}
+
+.delete {
+    display: inline-block;
+    position: fixed;
+    right: 0px;
+    top: 0px;
 }

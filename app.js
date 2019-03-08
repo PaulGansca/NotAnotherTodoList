@@ -236,6 +236,25 @@ app.post("/clipboard", (req, res) => {
     );
 });
 
+app.post("/idea", function (req, res) {
+    let listName = req.body.listName;
+
+    const idea = new Idea({
+        name: "",
+        content: ""
+    });
+
+    List.findOne({
+            name: listName
+        },
+        (err, results) => {
+            results.ideas.push(idea);
+            results.save();
+            res.redirect(`/idea/${listName}`);
+        }
+    );
+});
+
 app.post("/todolist/delete", (req, res) => {
     //select inputs that are checked
     const doneItem = req.body.checkbox;
@@ -290,6 +309,30 @@ app.post("/clipboard/delete", (req, res) => {
         (err, results) => {
             if (!err) {
                 res.redirect(`/clipboard/${listName}`);
+            }
+        }
+    );
+});
+
+app.post("/idea/delete", (req, res) => {
+    //select Link that was binned
+    const deleteLink = req.body.deleteButton;
+    const listName = req.body.listName;
+
+    //use their name to find them in the db and delete
+
+    List.findOneAndUpdate({
+            name: listName
+        }, {
+            $pull: {
+                ideas: {
+                    _id: deleteLink
+                }
+            }
+        },
+        (err, results) => {
+            if (!err) {
+                res.redirect(`/idea/${listName}`);
             }
         }
     );
