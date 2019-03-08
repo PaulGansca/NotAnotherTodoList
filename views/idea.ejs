@@ -22,7 +22,7 @@ family=Reenie+Beanie:regular" rel="stylesheet" type="text/css">
 
     <%# Script for copy %>
     <script src="/scripts/clipboard.min.js"></script>
-    
+
     <link rel="stylesheet" href="/css/idea.css">
 
 </head>
@@ -30,17 +30,21 @@ family=Reenie+Beanie:regular" rel="stylesheet" type="text/css">
 <body>
 
     <div class="container">
-        <h1 class="text-center">Idea Board</h1>
+        <h1 class="text-center"><%= listTitle %></h1>
 
-        <form method="post" action="" class="">
+        
             <ul>
+                <% newListItems.forEach(item => {%>
                 <li>
-                    <a href="">
-                        <h2>Title #1</h2>
-                        <p>Text Content #1</p>
+                    <a href="/idea/<%=`${listTitle}/${item.id}` %>">
+                        <h2><%= item.name %></h2>
+                        <p><%= `${item.content.substring(0, 80)}...` %></p>
                     </a>
+                    <form method="post" action="" class="">
+                    </form>
                 </li>
-        </form>
+                <% }) %>
+            </ul>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

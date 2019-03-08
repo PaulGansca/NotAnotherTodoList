@@ -183,7 +183,7 @@ app.get("/idea/:customListName", (req, res) => {
                 //show existing
                 res.render("idea", {
                     listTitle: results.name,
-                    newListItems: results.idea
+                    newListItems: results.ideas
                 });
             }
         }
