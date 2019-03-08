@@ -172,7 +172,7 @@ app.get("/clipboard/:customListName", (req, res) => {
 
 app.get("/idea/:customListName", (req, res) => {
     let customListName = _.kebabCase(req.params.customListName);
-
+    let elementId = -1;
     List.findOne({
             name: customListName,
             type: "idea"
@@ -184,7 +184,8 @@ app.get("/idea/:customListName", (req, res) => {
                 //show existing
                 res.render("idea", {
                     listTitle: results.name,
-                    newListItems: results.ideas
+                    newListItems: results.ideas,
+                    elementId: elementId
                 });
             }
         }
@@ -362,9 +363,32 @@ app.get("/:customListName/clipboard/:elementId", (req, res) => {
     );
 });
 
+app.get("/:customListName/idea/:elementId", (req, res) => {
+    let customListName = _.kebabCase(req.params.customListName);
+    let elementId = req.params.elementId;
+
+    List.findOne({
+            name: customListName,
+            type: "idea"
+        },
+        (err, results) => {
+            if (err) {
+                console.log(err);
+            } else {
+                //show existing
+                res.render("idea", {
+                    listTitle: results.name,
+                    newListItems: results.ideas,
+                    elementId: elementId
+                });
+            }
+        }
+    );
+});
+
 app.patch("/:customListName/clipboard/:elementId", (req, res) => {
     var date = new Date().toLocaleDateString();
-    List.update({
+    List.updateOne({
             name: req.params.customListName,
             clipboard: {
                 $elemMatch: {
@@ -386,7 +410,31 @@ app.patch("/:customListName/clipboard/:elementId", (req, res) => {
             }
         }
     );
-})
+});
+
+app.patch("/:customListName/idea/:elementId", (req, res) => {
+    List.updateOne({
+            name: req.params.customListName,
+            ideas: {
+                $elemMatch: {
+                    _id: req.params.elementId
+                }
+            }
+        }, { //update just the right Link inside clipboard
+            $set: {
+                "ideas.$.name": req.body.ideaTitle,
+                "ideas.$.content": req.body.ideaBody
+            }
+        },
+        err => {
+            if (!err) {
+                res.redirect(`/idea/${req.params.customListName}`);
+            } else {
+                res.send(err);
+            }
+        }
+    );
+});
 
 app.get("/about", function (req, res) {
     res.render("about");
