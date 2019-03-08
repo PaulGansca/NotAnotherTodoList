@@ -27,7 +27,7 @@ ul {
     padding: 3em;
 }
 
-ul li a.list {
+ul li {
     text-decoration: none;
     color: #000;
     background: #ffc;
@@ -59,13 +59,13 @@ ul li p {
     font-size: 180%;
 }
 
-ul li a.list {
+ul li {
     -webkit-transform: rotate(-6deg);
     -o-transform: rotate(-6deg);
     -moz-transform: rotate(-6deg);
 }
 
-ul li:nth-child(even) a.list {
+ul li:nth-child(even) {
     -o-transform: rotate(4deg);
     -webkit-transform: rotate(4deg);
     -moz-transform: rotate(4deg);
@@ -74,7 +74,7 @@ ul li:nth-child(even) a.list {
     background: #cfc;
 }
 
-ul li:nth-child(3n) a.list {
+ul li:nth-child(3n) {
     -o-transform: rotate(-3deg);
     -webkit-transform: rotate(-3deg);
     -moz-transform: rotate(-3deg);
@@ -83,7 +83,7 @@ ul li:nth-child(3n) a.list {
     background: #ccf;
 }
 
-ul li:nth-child(5n) a.list {
+ul li:nth-child(5n) {
     -o-transform: rotate(5deg);
     -webkit-transform: rotate(5deg);
     -moz-transform: rotate(5deg);
@@ -91,8 +91,8 @@ ul li:nth-child(5n) a.list {
     top: -10px;
 }
 
-ul li a.list:hover,
-ul li a:focus {
+ul li:hover,
+ul li:focus {
     box-shadow: 10px 10px 7px rgba(0, 0, 0, .7);
     -moz-box-shadow: 10px 10px 7px rgba(0, 0, 0, .7);
     -webkit-box-shadow: 10px 10px 7px rgba(0, 0, 0, .7);
@@ -112,7 +112,7 @@ ol li {
     padding-right: 1em;
 }
 
-ol li a {
+ol li {
     color: #fff;
 }
 
@@ -126,4 +126,15 @@ a:hover {
     position: fixed;
     right: 0px;
     top: 0px;
+}
+
+.edit {
+    display: inline-block;
+    position: fixed;
+    right: 40px;
+    top: 7px
+}
+
+.space-top {
+    margin-top: 25px;
 }

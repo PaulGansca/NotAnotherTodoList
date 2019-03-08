@@ -33,22 +33,35 @@ family=Reenie+Beanie:regular" rel="stylesheet" type="text/css">
         <h1 class="text-center"><%= listTitle %></h1>
 
         <form method="post" action="/idea" class="">
-            <button class="btn btn-primary" name="listName" value="<%= listTitle %>" type="submit"></button>
+            <button class="btn btn-primary" name="listName" value="<%= listTitle %>" type="submit">New Idea</button>
         </form>
             <ul>
                 <% newListItems.forEach(item => {%>
-                <li>
-                    <a class="list" href="">
+                    <% if(item._id == elementId) { %>
+                    <li>
+                    <a class="edit" href='<%= `/${listTitle}/idea/${item._id}` %>'><i class="fas fa-edit align-right"></i></a>
+                        <form class="delete" method="post" action="/idea/delete" class="">
+                            <input type="hidden" name="listName" value="<%= listTitle %>"></input>
+                            <button class="btn btn-link" type="submit" name="deleteButton" value="<%= item._id %>"><i class="fas fa-trash-alt text-danger"></i></button>
+                        </form>
+                        <form class="space-top" method="post" action="<%= `/${listTitle}/idea/${item._id}?_method=PATCH` %>">
+                            <h2><input type="text" name="ideaTitle" class="form-control" value="<%= item.name %>" placeholder="Title"></h2>
+                            <p><input type="text" name="ideaBody" class="form-control" value="<%= `${item.content.substring(0, 80)}` %>" placeholder="Idea"></p>
+                            <button class="btn btn-primary" type="submit" name="idea" value="<%= listTitle %>">Update</button>
+                        </form>
+                    </li>
+                    <% } else {%>
+                    <li>
+                        <a class="edit" href='<%= `/${listTitle}/idea/${item._id}` %>'><i class="fas fa-edit align-right"></i></a>
                         <h2><%= item.name %> 
                             <form class="delete" method="post" action="/idea/delete" class="">
                                 <input type="hidden" name="listName" value="<%= listTitle %>"></input>
                                 <button class="btn btn-link" type="submit" name="deleteButton" value="<%= item._id %>"><i class="fas fa-trash-alt text-danger"></i></button>
                             </form>
                         </h2>
-                        <p><%= `${item.content.substring(0, 80)}...` %></p>
-                    </a>
-                    
-                </li>
+                        <p><%= `${item.content.substring(0, 80)}...` %></p>                      
+                    </li>
+                    <% }%>
                 <% }) %>
             </ul>
     </div>
