@@ -6,7 +6,7 @@
 
 <div class="box">
     <% newLists.forEach(list => { %>
-      <form action="/delete" method="post">
+      <form action="/todolist/delete" method="post">
         <div class="item">
           <input type="checkbox" name="checkbox" value="<%= list._id %>" onChange="this.form.submit()">
           <p><a href="<%= `${list.type}/${list.name}` %>"> <%= `${list.name}; ${list.type}; ${list.description}` %> </a></p>
